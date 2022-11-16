@@ -46,6 +46,7 @@ app.post("/users/", async (request, response) => {
   const selectUserQuery = `SELECT * FROM user WHERE username = '${username}'`;
   const dbUser = await db.get(selectUserQuery);
   if (dbUser === undefined) {
+  
     const createUserQuery = `
       INSERT INTO 
         user (username, name, password, gender, location) 
@@ -72,13 +73,16 @@ app.post("/login", async (request, response) => {
   const selectUserQuery = `SELECT * FROM user WHERE username = '${username}'`;
   const dbUser = await db.get(selectUserQuery);
   if (dbUser === undefined) {
+      //user dosn't exit 
     response.status(400);
     response.send("Invalid User");
   } else {
+    //compare password , hashedpassword
     const isPasswordMatched = await bcrypt.compare(password, dbUser.password);
     if (isPasswordMatched === true) {
       response.send("Login Success!");
     } else {
+      
       response.status(400);
       response.send("Invalid Password");
     }
